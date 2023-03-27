@@ -1,4 +1,4 @@
-# docker run --ipc=host --ulimit memlock=-1 --ulimit stack=67108864 --rm --gpus all -v "$(pwd)":"$(pwd)"
+# docker run --ipc=host --ulimit memlock=-1 --rm --gpus all -v "$(pwd)":"$(pwd)"
 import autokeras as ak
 import tensorflow as tf
 from pathlib import Path
