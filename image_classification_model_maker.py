@@ -1,5 +1,5 @@
-# docker run --ipc=host --ulimit memlock=-1 --rm --gpus all -v "$(pwd)":"$(pwd)" nvcr.io/nvidia/tensorflow:23.02-tf2-py3 
-# on ubuntu 22.04 rtx 2060
+# docker run --ipc=host --ulimit memlock=-1 --rm --gpus all -v "$(pwd)":"$(pwd)" nvcr.io/nvidia/tensorflow:23.02-tf2-py3
+# on ubuntu 22.04 with rtx 2060
 import autokeras as ak
 import tensorflow as tf
 from pathlib import Path
