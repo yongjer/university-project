@@ -1,6 +1,6 @@
 # university-project
 
-using nvidia tao toolkit to focus on the inference part on the limited computability sbc
+using nvidia tao toolkit to do transfer learning, focus on the inference part on the limited computability sbc
 
 use pyserial to send serial number to adam-4000, which controls the circuit open or close, controls the relay.
 
