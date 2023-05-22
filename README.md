@@ -12,3 +12,5 @@ set jetson nano as server,and write a program with gui by pyside6 as client to i
 * [`pyserial`](https://pythonhosted.org/pyserial/)
 * [`yolo-nas`](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
 * [`PySide6`](https://doc.qt.io/qtforpython-6/index.html)
+## FYI: create a gui for android platform by pyside6
+[`qt blog`](https://www.qt.io/blog/taking-qt-for-python-to-android)
