@@ -7,6 +7,6 @@ def move_forward():
 def move_backward():
     pass
 def main():
-    
-if "__name__" == __main__:
+    pass
+if __name__ == '__main__':
     main()
