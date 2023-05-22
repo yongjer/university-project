@@ -10,4 +10,4 @@ set jetson nano as server, write a program with gui by pyside6 as client to impl
 * [`tao toolkit`](https://developer.nvidia.com/tao-toolkit)
 * [`transformers by huggingface`](https://huggingface.co/docs/transformers/index)
 * [`pyserial`](https://pythonhosted.org/pyserial/)
-* [`yolo-nas](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
+* [`yolo-nas`](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
