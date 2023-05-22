@@ -24,9 +24,9 @@ sport = int(sport)
 dport = int(dport)
 
 print('\ngot peer')
-print('  ip:          {}'.format(ip))
-print('  source port: {}'.format(sport))
-print('  dest port:   {}\n'.format(dport))
+print(f"ip: {ip}")
+print(f"source port: {sport}")
+print(f"dest port: {dport}\n")
 
 # punch hole
 # equiv: echo 'punch hole' | nc -u -p 50001 x.x.x.x 50002
