@@ -12,5 +12,5 @@ set jetson nano as server,and write a program with gui by pyside6 as client to i
 * [`pyserial`](https://pythonhosted.org/pyserial/)
 * [`yolo-nas`](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
 * [`PySide6`](https://doc.qt.io/qtforpython-6/index.html)
-## FYI: create a gui for android and desktop platform by flet, which is using material design
-* [`flet`](https://flet.dev/docs/) 
+## FYI: create a gui for android and desktop platform by KivyMD, which is using material design
+* [`KivyMD`](https://kivymd.readthedocs.io/en/1.1.1/)
