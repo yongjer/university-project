@@ -11,5 +11,6 @@ set jetson nano as server,and write a program with gui by pyside6 as client to i
 * [`transformers by huggingface`](https://huggingface.co/docs/transformers/index)
 * [`pyserial`](https://pythonhosted.org/pyserial/)
 * [`yolo-nas`](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
+* [`Retail Object Detection`](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/retail_object_detection)
 ## FYI: create a gui for android and desktop platform by KivyMD, which is using material design
 * [`KivyMD`](https://kivymd.readthedocs.io/en/1.1.1/)
