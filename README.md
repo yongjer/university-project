@@ -1,16 +1,14 @@
 # university-project
 ## overview
-using nvidia tao toolkit 5 to do transfer learning, focus on the inference part on the limited computability sbc
+using transformers to train a model 
 
 use pyserial to send serial number to adam-4000, which controls the circuit open or close, controls the relay.
 
-set jetson nano as server,and write a program with gui by pyside6 as client to implete the remote control,targeting desktop and android platform
+set jetson nano as server,and write a program with gui by streamlit as client to implete the remote control,targeting desktop and android platform
 
 ## potential toolkit
 * [`tao toolkit`](https://developer.nvidia.com/tao-toolkit)
 * [`transformers by huggingface`](https://huggingface.co/docs/transformers/index)
 * [`pyserial`](https://pythonhosted.org/pyserial/)
-* [`yolo-nas`](https://github.com/Deci-AI/super-gradients/blob/master/YOLONAS.md)
-* [`Retail Object Detection`](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/tao/models/retail_object_detection)
-## FYI: create a gui for android and desktop platform by KivyMD, which is using material design
-* [`KivyMD`](https://kivymd.readthedocs.io/en/1.1.1/)
+## gui
+* [`streamlit`](https://docs.streamlit.io/)
