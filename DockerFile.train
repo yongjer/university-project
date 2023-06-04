@@ -1,4 +1,4 @@
 FROM nvcr.io/nvidia/pytorch:23.05-py3
 RUN apt-get update && apt-get upgrade -y
 RUN pip3 install --upgrade pip
-RUN pip3 install transformers[deepspeed] accelerate datasets optimum safetensors timm
+RUN pip3 install transformers accelerate datasets optimum safetensors timm
