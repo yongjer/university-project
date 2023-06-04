@@ -1,0 +1,2 @@
+FROM huggingface/transformers-pytorch-deepspeed-latest-gpu:latest
+RUN apt-get update
