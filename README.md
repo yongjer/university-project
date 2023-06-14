@@ -12,3 +12,4 @@ set jetson nano as server,and write a program with gui by streamlit as client to
 * [`pyserial`](https://pythonhosted.org/pyserial/)
 ## gui
 * [`streamlit`](https://docs.streamlit.io/)
+* [`kivymd`](https://kivymd.readthedocs.io/en/1.1.1/)
