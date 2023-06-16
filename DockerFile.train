@@ -1,9 +1,8 @@
 FROM nvcr.io/nvidia/pytorch:23.02-py3
 RUN apt-get update && apt-get upgrade -y
 RUN pip3 install --upgrade pip
-RUN pip3 install transformers \
+RUN pip3 install optimum \
 accelerate \
 datasets \
-optimum \
-safetensors \
-timm 
+transformers \
+evaluate
