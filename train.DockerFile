@@ -13,7 +13,7 @@ RUN apt-get update && pip install \
         transformers \
         datasets \
         accelerate \
-        optimum[onnxruntime-gpu] \
+        optimum[onnxruntime-gpu, exporters] \
         diffusers \
         evaluate \
         jupyter \
