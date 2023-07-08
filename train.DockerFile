@@ -16,6 +16,7 @@ RUN apt-get update && pip install \
         optimum[onnxruntime-gpu, exporters] \
         diffusers \
         evaluate \
+        xformers \
         jupyter \
         notebook \
       && \
