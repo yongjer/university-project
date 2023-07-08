@@ -6,7 +6,7 @@
 # See https://docs.docker.com/engine/reference/builder/
 # for more information.
 #
-FROM nvcr.io/nvidia/pytorch:23.02-py3
+FROM nvcr.io/nvidia/pytorch:23.06-py3
 
 # Install my-extra-package-1 and my-extra-package-2
 RUN apt-get update && pip install \
