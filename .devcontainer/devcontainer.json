@@ -4,7 +4,8 @@
   "runArgs": [
     "--network=host",
     "--device=/dev/video0:/dev/video0",
-	"--gpus all"
+	"--gpus",
+	"all"
 ],
 "customizations": {
 	"vscode": {
