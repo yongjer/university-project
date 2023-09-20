@@ -3,7 +3,8 @@
   "dockerFile": "Dockerfile",
   "runArgs": [
     "--network=host",
-    "--device=/dev/video0:/dev/video0" // Add this line to enable webcam support
+    "--device=/dev/video0:/dev/video0",
+	"--gpus all"
 ],
 "customizations": {
 	"vscode": {
