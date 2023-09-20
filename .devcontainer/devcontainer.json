@@ -1,19 +1,20 @@
 {
-  "name": "isaac ros",
-  "dockerFile": "Dockerfile",
-  "runArgs": [
-    "--network=host",
-    "--device=/dev/video0:/dev/video0",
-	"--gpus",
-	"all"
-],
-"customizations": {
-	"vscode": {
-		"extensions": [
-			"GitHub.copilot",
-			"ms-python.python",
-			"GitHub.copilot-chat"
-		]
-	}
-}
+	"name": "isaac ros",
+	"dockerFile": "Dockerfile",
+	"runArgs": [
+    	"--network=host",
+    	"--device=/dev/video0:/dev/video0",
+		"--gpus",
+		"all"
+	],
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"ms-python.python",
+				"GitHub.copilot-chat"
+			]
+		}
+	},
+	
 }
