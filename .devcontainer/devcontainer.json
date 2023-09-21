@@ -4,8 +4,9 @@
 	"runArgs": [
     	"--network=host",
     	"--device=/dev/video0:/dev/video0",
-		"--gpus",
-		"all"
+		"--gpus", "all",
+		"--ulimit", "memlock=-1",
+		"--ulimit", "stack=67108864"
 	],
 	"customizations": {
 		"vscode": {
