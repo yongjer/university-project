@@ -6,7 +6,8 @@
     	"--device=/dev/video0:/dev/video0",
 		"--gpus", "all",
 		"--ulimit", "memlock=-1",
-		"--ulimit", "stack=67108864"
+		"--ulimit", "stack=67108864",
+		"-v", "/dev:/dev"
 	],
 	"customizations": {
 		"vscode": {
