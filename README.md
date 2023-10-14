@@ -1,6 +1,6 @@
 # University Project
 
-This project is a university project that utilizes ROS2, PySerial, and NAV2. The purpose of this project is to demonstrate the integration of these technologies to create a visual SLAM system.
+This project is a university project that utilizes ROS2, PySerial, and NAV2. The purpose of this project is to demonstrate the integration of these technologies to create a SLAM system.
 
 ## Requirements
 
