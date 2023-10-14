@@ -1,12 +1,12 @@
 # University Project
 
-This project is a university project that utilizes ROS2, PySerial, and NVIDIA Isaac VSLAM. The purpose of this project is to demonstrate the integration of these technologies to create a visual SLAM system.
+This project is a university project that utilizes ROS2, PySerial, and NAV2. The purpose of this project is to demonstrate the integration of these technologies to create a visual SLAM system.
 
 ## Requirements
 
 - ROS2
 - PySerial
-- NVIDIA Isaac VSLAM
+- NAV2
 
 ## Installation
 
@@ -18,7 +18,7 @@ This project is a university project that utilizes ROS2, PySerial, and NVIDIA Is
 
 1. Launch the ROS2 nodes
 2. Connect the necessary hardware
-3. Run the VSLAM system
+3. Run the nav2 system
 
 ## License
 
