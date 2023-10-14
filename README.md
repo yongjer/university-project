@@ -4,9 +4,9 @@ This project is a university project that utilizes ROS2, PySerial, and NAV2. The
 
 ## Requirements
 
-- ROS2
-- PySerial
-- NAV2
+- [ROS2](https://docs.ros.org/en/humble/index.html)
+- [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
+- [NAV2](https://navigation.ros.org/)
 
 ## Installation
 
