@@ -7,6 +7,7 @@ This project is a university project that utilizes ROS2, PySerial, and NAV2. The
 - [ROS2](https://docs.ros.org/en/humble/index.html)
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
 - [NAV2](https://navigation.ros.org/)
+- [socket](https://docs.python.org/zh-tw/3/howto/sockets.html)
 
 ## Installation
 
