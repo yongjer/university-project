@@ -1,6 +1,6 @@
 {
 	"name": "isaac ros",
-	"dockerFile": "Dockerfile",
+	"dockerFile": "../Dockerfile",
 	"runArgs": [
     	"--network=host",
     	"--device=/dev/video0:/dev/video0",
