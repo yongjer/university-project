@@ -21,7 +21,8 @@ This project is a university project that utilizes ROS2, PySerial, and NAV2. The
 1. Launch the ROS2 nodes
 2. Connect the necessary hardware
 3. Run the nav2 system
-
+## Warning
+This is a university project, the communication protocol is not well designed and ecrypted. Please do not use this project in a production environment. 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv3 License and any later version - see the [LICENSE](LICENSE) file for details.
