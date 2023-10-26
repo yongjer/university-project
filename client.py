@@ -1,15 +1,18 @@
 import socket
-HOST = ''
-PORT = 7000
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect((HOST, PORT))
+def tcp_communication(outdata):
+    HOST = ''
+    PORT = 7000
 
-outdata = 'hello tcp'
-print('send: ' + outdata)
-s.send(outdata.encode())
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((HOST, PORT))
 
-indata = s.recv(1024)
-print('recv: ' + indata.decode())
+    print('send: ' + outdata)
+    s.send(outdata.encode())
 
-s.close()
+    indata = s.recv(1024)
+    print('recv: ' + indata.decode())
+    s.close()
+
+if __name__ == '__main__':
+    tcp_communication('hello world!')

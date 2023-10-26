@@ -8,6 +8,7 @@ This project is a university project that utilizes ROS2, PySerial, and NAV2. The
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
 - [NAV2](https://navigation.ros.org/)
 - [socket](https://docs.python.org/zh-tw/3/howto/sockets.html)
+- [pygame](https://www.pygame.org/docs/)
 
 ## Installation
 
