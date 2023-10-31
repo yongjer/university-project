@@ -3,7 +3,7 @@
 	"dockerFile": "../Dockerfile",
 	"runArgs": [
     	"--network=host",
-    	"--device=/dev/video0:/dev/video0",
+    	//"--device=/dev/video0:/dev/video0",
 		"--gpus", "all",
 		"--ulimit", "memlock=-1",
 		"--ulimit", "stack=67108864"
