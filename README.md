@@ -10,7 +10,7 @@ This project is a university project that utilizes ROS2 and PySerial and. The pu
 - [pygame](https://www.pygame.org/docs/)
 ## environment
 
-It's recommend to use [devcontainer](./.devcontainer/) to run this project.
+It's recommend to use [devcontainer](.devcontainer/) to run this project.
 ## Warning
 
 This is a university project, the communication protocol is not well designed and ecrypted. Please do not use this project in a production environment. 
