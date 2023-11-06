@@ -9,8 +9,13 @@ This project is a university project that utilizes ROS2 and PySerial and. The pu
 - [socket](https://docs.python.org/zh-tw/3/howto/sockets.html)
 - [pygame](https://www.pygame.org/docs/)
 ## environment
-
+autonomus car(server):
 It's recommend to use [devcontainer](.devcontainer/) to run this project.
+client:
+```
+pip install pygame
+```
+to read the input from joystick.
 ## Warning
 
 This is a university project, the communication protocol is not well designed and ecrypted. Please do not use this project in a production environment. 
