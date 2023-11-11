@@ -6,13 +6,16 @@ This project is a university project that utilizes ROS2 and PySerial and. The pu
 
 - [ROS2](https://docs.ros.org/en/humble/index.html)
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
+- [flet](https://flet.dev/)
+
 ## environment
-autonomus car(server):
-It's recommend to use [devcontainer](.devcontainer/) to run this project.
-client:
-```
-pip install pygame
-``` 
+### autonomus car(server):
+It's recommend to use [devcontainer](.devcontainer) to run this project.
+
+### client:
+
+install flet in android device or ios device
+
 
 ## License
 
