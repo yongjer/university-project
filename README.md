@@ -6,20 +6,14 @@ This project is a university project that utilizes ROS2 and PySerial and. The pu
 
 - [ROS2](https://docs.ros.org/en/humble/index.html)
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
-- [socket](https://docs.python.org/zh-tw/3/howto/sockets.html)
-- [pygame](https://www.pygame.org/docs/)
 ## environment
 autonomus car(server):
 It's recommend to use [devcontainer](.devcontainer/) to run this project.
 client:
 ```
 pip install pygame
-```
-to read the input from joystick.
-## Warning
-
-This is a university project, the communication protocol is not well designed and ecrypted. Please do not use this project in a production environment. 
+``` 
 
 ## License
 
-This project is licensed under the GPLv3 License and any later version - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the GPLv3 License or any later version - see the [LICENSE](LICENSE) file for details.

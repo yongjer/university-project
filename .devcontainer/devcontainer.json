@@ -1,5 +1,5 @@
 {
-	"name": "isaac ros",
+	"name": "ros",
 	"dockerFile": "../Dockerfile",
 	"runArgs": [
     	"--network=host",
