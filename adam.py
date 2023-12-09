@@ -1,3 +1,8 @@
+class adam():
+    def __init__(self) -> None:
+        pass
+
+    
 # A function to send data to a serial port
 def send_data(port, baudrate, data):
     # Create and configure a serial port object
