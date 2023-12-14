@@ -7,7 +7,7 @@ This project is a university project using ROS2 and PySerial. The purpose of thi
 - [ROS2](https://docs.ros.org/en/humble/index.html)
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
 - [flet](https://flet.dev/)
-- [whisper](https://huggingface.co/openai/whisper-large-v3)
+- [SeamlessM4T v2](https://huggingface.co/facebook/seamless-m4t-v2-large)
 - [Gemini Pro Vision](https://ai.google.dev/docs/function_calling?hl=en)
 
 ## Environment
