@@ -1,22 +1,16 @@
 # University Project
 
-This project is a university project using ROS2 and PySerial. The purpose of this project is to demonstrate the integration of these technologies.
+This project is a university project using PySerial. The purpose of this project is to demonstrate the integration of these technologies.
 
 ## Requirements
 
-- [ROS2](https://docs.ros.org/en/humble/index.html)
 - [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
 - [streamlit](https://streamlit.io/)
-- [SeamlessM4T v2](https://huggingface.co/facebook/seamless-m4t-v2-large)
-- [Gemini Pro Vision](https://ai.google.dev/docs/function_calling?hl=en)
+- [gradio](https://gradio.app/)
 
 ## Environment
 ### autonomus car(server):
-It is recommended to use [devcontainer](.devcontainer) to run this project.
-
-### Client:
-
-Install flet on an android or ios device.
+It is recommended to use [devcontainer](.devcontainer) to run this project
 
 
 ## Licence
