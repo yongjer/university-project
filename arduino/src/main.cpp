@@ -1,5 +1,5 @@
 #include <Arduino.h>
-
+/*
 void setup() {
   // Initialize serial communication at 9600 baud rate
   Serial.begin(9600);
@@ -23,4 +23,19 @@ void loop() {
       digitalWrite(13, LOW);
     }
   }
+}
+*/
+#include <AccelStepper.h>
+
+AccelStepper stepper; // Defaults to AccelStepper::FULL4WIRE (4 pins) on 2, 3, 4, 5
+
+void setup()
+{  
+   stepper.setMaxSpeed(100);
+   stepper.setSpeed(150);	
+}
+
+void loop()
+{  
+   stepper.runSpeed();
 }
