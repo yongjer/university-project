@@ -3,7 +3,7 @@ from gradio_client import Client
 
 client = Client("http://127.0.0.1:7860")
 
-res = client.predict("the man is happy", "the dog is sad\nthe man is excited", api_name="/predict")
+res = client.predict("move forward for three seconds", "three\ntwo\none", api_name="/predict")
 print(res)
 # output the highest similarity index
 
