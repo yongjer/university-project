@@ -1,18 +1,29 @@
 # University Project
 
-This project is a university project using PySerial. The purpose of this project is to demonstrate the integration of these technologies.
+## Introduction
 
-## Requirements
+This is a university project that involves various components including an AI server, an Arduino project, and a Jetson project.
 
-- [PySerial](https://pyserial.readthedocs.io/en/latest/index.html)
-- [streamlit](https://streamlit.io/)
-- [gradio](https://gradio.app/)
+## Structure
 
-## Environment
-### autonomus car(server):
-It is recommended to use [devcontainer](.devcontainer) to run this project
+The project is structured as follows:
 
+- `ai_server/`: Contains various AI models and scripts to run them.
+- `arduino/`: Contains an Arduino project with its source code, libraries, and tests.
+- `jetson/`: Contains a Dockerfile and Python scripts for the Jetson project.
 
-## Licence
+## Setup and Installation
 
-This project is licensed under the GPLv3 or any later version - see the [LICENSE](LICENSE) file for details.
+Provide instructions on how to setup and install your project.
+
+## Usage
+
+Provide instructions on how to use your project.
+
+## Contributing
+
+Provide instructions on how to contribute to your project.
+
+## License
+
+This project is licensed under the terms of the [LICENSE](LICENSE) file.
