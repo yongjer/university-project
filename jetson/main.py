@@ -30,10 +30,14 @@ def transcribe(inputs, task):
     
     from gradio_client import Client
 
-    client = Client("http://0.0.0.0:7860/")
-    text = client.predict(inputs, api_name="/predict")
+    transcribe_client = Client("http://0.0.0.0:7860/")
+    text = transcribe_client.predict(inputs, api_name="/predict")
     #text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
     return  text
+
+def classify_movement(text):
+    raise gr.Error("Not implemented yet")
+
 
 '''
 def _return_yt_html_embed(yt_url):
