@@ -40,6 +40,7 @@ Named API endpoints: 3
      - [Textbox] output_1: str
 '''
 
+
 import gradio as gr
 from gradio_client import Client
 
@@ -48,7 +49,7 @@ BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
 WHISPER_SERVER_PORT = "http://localhost:7860"
 TEXT_EMBEDDING_SERVER_PORT = "http://localhost:7861"
-MOVEMENT = ["forward", "backward", "left", "right", "up", "down", "stop"]
+MOVEMENT = ["forward", "backward", "go left", "go right", "upward", "downward", "stop"]
 TIME = ["do not move", "one second", "two seconds", "three seconds", "four seconds", "five seconds", "six seconds", "seven seconds", "eight seconds", "nine seconds", "ten seconds"]
 
 def transcribe(inputs: str, task: str) -> str:
@@ -60,56 +61,20 @@ def transcribe(inputs: str, task: str) -> str:
         asr_client = Client(WHISPER_SERVER_PORT)
         result = asr_client.predict(inputs=inputs, task=task, api_name="/predict")
         print(result)
-        return result
+        movement_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+        movement_result = movement_client.predict(param_0=result, param_1="\n".join(MOVEMENT), api_name="/predict")
+        movement_index = movement_result.index(max(movement_result))  # find the index of the highest value
+        movement = str(MOVEMENT[movement_index])
+        print(movement)
+        time_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+        time_result = time_client.predict(param_0=result, param_1="\n".join(TIME), api_name="/predict")
+        time_index = time_result.index(max(time_result))  # find the index of the highest value
+        time = str(TIME[time_index])
+        return f"movement = {movement}, time = {time}"
     except Exception as e:
         raise gr.Error(f"An error occurred during transcription: {str(e)}")
 
-def movement_classification(text):
-    if text is None:
-        raise gr.Error("No text submitted! Please provide text for classification.")
-
-    try:
-        movement_client = Client(TEXT_EMBEDDING_SERVER_PORT)
-        result = movement_client.predict(param_0=text, param_1="\n".join(MOVEMENT), api_name="/predict")
-        index = result.index(max(result))  # find the index of the highest value
-        movement = MOVEMENT[index]
-        return movement
-    except Exception as e:
-        raise gr.Error(f"An error occurred during movement classification: {str(e)}")
-
-def time_classification(text):
-    if text is None:
-        raise gr.Error("No text submitted! Please provide text for classification.")
-
-    try:
-        time_client = Client(TEXT_EMBEDDING_SERVER_PORT)
-        result = time_client.predict(param_0=text, param_1="\n".join(TIME), api_name="/predict")
-        index = result.index(max(result))  # find the index of the highest value
-        time = TIME[index]
-        return time
-    except Exception as e:
-        raise gr.Error(f"An error occurred during time classification: {str(e)}")
-
-def determine_movement_and_time(inputs, task):
-    text = transcribe(inputs, task)
-    print(text)
-    movement = movement_classification(text)
-    time = time_classification(text)
-    return text, movement, time
-
 demo = gr.Blocks()
-
-full_demo = gr.Interface(
-    fn=determine_movement_and_time,
-    inputs=[
-        gr.Audio(sources=["microphone"], type="filepath", label="Audio Input"),
-        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
-    ],
-    outputs=["text", "text", "text"],
-    title="Whisper Large V3: Movement and Time Classification",
-    description=f"Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of arbitrary length.",
-    allow_flagging="never",
-)
 
 mf_transcribe = gr.Interface(
     fn=transcribe,
@@ -123,20 +88,8 @@ mf_transcribe = gr.Interface(
     allow_flagging="never",
 )
 
-file_transcribe = gr.Interface(
-    fn=transcribe,
-    inputs=[
-        gr.Audio(sources="upload", type="filepath", label="Audio File Upload"),
-        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
-    ],
-    outputs="text",
-    title="Whisper Large V3: Transcribe Audio",
-    description=f"Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of arbitrary length.",
-    allow_flagging="never",
-)
-
 with demo:
-    gr.TabbedInterface([mf_transcribe, file_transcribe, full_demo], ["Microphone", "Audio File", "Full Demo"])
+    gr.TabbedInterface([mf_transcribe], ["Microphone"])
 
 demo.queue()
-demo.launch(server_port=7862)
+demo.launch(server_port=7862, share=True)
