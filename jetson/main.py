@@ -1,31 +1,116 @@
+'''
+Loaded as API: http://localhost:7861/ ✔
+Client.predict() Usage Info
+---------------------------
+Named API endpoints: 1
 
-import torch
+ - predict(param_0, param_1, api_name="/predict") -> similarity_scores
+    Parameters:
+     - [Textbox] param_0: str (required)  
+     - [Textbox] param_1: str (required)  
+    Returns:
+     - [Json] similarity_scores: Dict[Any, Any] (any valid json)
+'''
+'''
+Loaded as API: http://localhost:7860/ ✔
+Client.predict() Usage Info
+---------------------------
+Named API endpoints: 3
+
+ - predict(inputs, task, api_name="/predict") -> output
+    Parameters:
+     - [Audio] inputs: filepath (required)  
+     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
+    Returns:
+     - [Textbox] output: str 
+
+ - predict(inputs, task, api_name="/predict_1") -> output
+    Parameters:
+     - [Audio] inputs: filepath (required)  
+     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
+    Returns:
+     - [Textbox] output: str 
+
+ - predict(yt_url, task, api_name="/predict_2") -> (output_0, output_1)
+    Parameters:
+     - [Textbox] yt_url: str (required)  
+     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
+    Returns:
+     - [Html] output_0: str 
+     - [Textbox] output_1: str
+'''
 
 import gradio as gr
-#import yt_dlp as youtube_dl
-from transformers import pipeline
-from transformers.pipelines.audio_utils import ffmpeg_read
+from gradio_client import Client, file
 
-import tempfile
-import os
-
-
+MODEL_NAME = "openai/whisper-large-v3"
+BATCH_SIZE = 8
+FILE_LIMIT_MB = 1000
+WHISPER_SERVER_PORT = "http://localhost:7860"
+TEXT_EMBEDDING_SERVER_PORT = "http://localhost:7861"
+MOVEMENT = ["forward", "backward", "left", "right", "up", "down", "stop"]
+TIME = ["do not move", "one second", "two seconds", "three seconds", "four seconds", "five seconds", "six seconds", "seven seconds", "eight seconds", "nine seconds", "ten seconds"]
 
 def transcribe(inputs, task):
     if inputs is None:
-        raise gr.Error("No audio file submitted! Please upload or record an audio file before submitting your request.")
-    
-    from gradio_client import Client
+        raise gr.Error(
+            "No audio file submitted! Please upload or record an audio file before submitting your request."
+        )
+    asr_client = Client(WHISPER_SERVER_PORT)
+    result = asr_client.predict(inputs=inputs, task="transcribe", api_name="/predict")
+    return result
 
-    transcribe_client = Client("http://0.0.0.0:7860/")
-    text = transcribe_client.predict(inputs, api_name="/predict")
-    #text = pipe(inputs, batch_size=BATCH_SIZE, generate_kwargs={"task": task}, return_timestamps=True)["text"]
-    return  text
+def movement_classification(inputs):
+    # inputs is a string from transcribe()
+    if inputs is None:
+        raise gr.Error(
+            "No text submitted! Please upload or record an audio file before submitting your request."
+        )
 
-def classify_movement(text):
-    raise gr.Error("Not implemented yet")
+    movement_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+    result = movement_client.predict(param_0=inputs, param_1= "\n".join(MOVEMENT), api_name="/predict")
+    # result is a list of floats of similarity of each movement, from 0 to 1
+    # find the index of the highest value
+    index = result.index(max(result))
+    movement = MOVEMENT[index]
+    return movement
+
+def time_classification(inputs: str):
+    if inputs is None:
+        raise gr.Error(
+            "No text submitted! Please upload or record an audio file before submitting your request."
+        )
+    time_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+    result = time_client.predict(param_0=inputs, param_1= "\n".join(TIME), api_name="/predict")
+    # result is a list of floats of similarity of each time, from 0 to 1
+    # find the index of the highest value
+    index = result.index(max(result))
+    time = TIME[index]
+    return time
+
+# determine the movement and time by trascribing the audio then classifying the text
+def determine_movement_and_time(inputs):
+    text = transcribe(inputs, "transcribe")
+    movement = movement_classification(text)
+    time = time_classification(text)
+    return movement, time
 
 demo = gr.Blocks()
+
+full_demo = gr.Interface(
+    fn=determine_movement_and_time,
+    inputs=[
+        gr.Audio(sources="microphone", type="filepath"),
+    ],
+    outputs=["text", "text"],
+    title="Whisper Large V3: Movement and Time Classification",
+    description=(
+        "Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the"
+        f" checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files"
+        " of arbitrary length."
+    ),
+    allow_flagging="never",
+)
 
 mf_transcribe = gr.Interface(
     fn=transcribe,
@@ -43,6 +128,7 @@ mf_transcribe = gr.Interface(
     allow_flagging="never",
 )
 
+
 file_transcribe = gr.Interface(
     fn=transcribe,
     inputs=[
@@ -59,8 +145,7 @@ file_transcribe = gr.Interface(
     allow_flagging="never",
 )
 
-
 with demo:
-    gr.TabbedInterface([mf_transcribe, file_transcribe], ["Microphone", "Audio file"])
+    gr.TabbedInterface([mf_transcribe, file_transcribe, full_demo], ["Microphone", "Audio file", "Full demo"])
 
-demo.queue().launch(server_port = 7861)
+demo.queue().launch(share=True, server_port=7862)
