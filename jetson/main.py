@@ -93,3 +93,57 @@ with demo:
 
 demo.queue()
 demo.launch(server_port=7862, share=True)
+
+'''
+import gradio as gr
+from gradio_client import Client
+
+MODEL_NAME = "openai/whisper-large-v3"
+BATCH_SIZE = 8
+FILE_LIMIT_MB = 1000
+WHISPER_SERVER_PORT = "http://localhost:7860"
+TEXT_EMBEDDING_SERVER_PORT = "http://localhost:7861"
+MOVEMENT = ["forward", "backward", "go left", "go right", "upward", "downward", "stop"]
+TIME = ["do not move", "one second", "two seconds", "three seconds", "four seconds", "five seconds", "six seconds", "seven seconds", "eight seconds", "nine seconds", "ten seconds"]
+
+asr_client = Client(WHISPER_SERVER_PORT)
+embedding_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+
+def predict(param_0, param_1):
+    result = embedding_client.predict(param_0=param_0, param_1="\n".join(param_1), api_name="/predict")
+    index = result.index(max(result))  # find the index of the highest value
+    return str(param_1[index])
+
+def transcribe(inputs: str, task: str) -> str:
+    if inputs == "":
+        return "No audio file submitted! Please upload or record an audio file before submitting your request."
+    try:
+        result = asr_client.predict(inputs=inputs, task=task, api_name="/predict")
+        print(result)
+        movement = predict(result, MOVEMENT)
+        print(movement)
+        time = predict(result, TIME)
+        return f"movement = {movement}, time = {time}"
+    except Exception as e:
+        return f"An error occurred during transcription: {str(e)}"
+
+demo = gr.Blocks()
+
+mf_transcribe = gr.Interface(
+    fn=transcribe,
+    inputs=[
+        gr.Audio(sources="microphone", type="filepath", label="Microphone Input"),
+        gr.Radio(["transcribe", "translate"], label="Task", value="transcribe"),
+    ],
+    outputs="text",
+    title="Whisper Large V3: Transcribe Audio",
+    description=f"Transcribe long-form microphone or audio inputs with the click of a button! Demo uses the checkpoint [{MODEL_NAME}](https://huggingface.co/{MODEL_NAME}) and 🤗 Transformers to transcribe audio files of arbitrary length.",
+    allow_flagging="never",
+)
+
+with demo:
+    gr.TabbedInterface([mf_transcribe], ["Microphone"])
+
+demo.queue()
+demo.launch(server_port=7862, share=True)
+"""
