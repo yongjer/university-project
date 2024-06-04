@@ -15,32 +15,19 @@ Named API endpoints: 1
 Loaded as API: http://localhost:7860/ ✔
 Client.predict() Usage Info
 ---------------------------
-Named API endpoints: 3
+Named API endpoints: 1
 
- - predict(inputs, task, api_name="/predict") -> output
+ - predict(audio_filepath, src_lang, tgt_lang, pnc, api_name="/transcribe") -> model_output
     Parameters:
-     - [Audio] inputs: filepath (required)  
-     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
+     - [Audio] audio_filepath: filepath (required)  
+     - [Dropdown] src_lang: Literal['English', 'Spanish', 'French', 'German'] (not required, defaults to:   English)  
+     - [Dropdown] tgt_lang: Literal['English', 'Spanish', 'French', 'German'] (not required, defaults to:   English)  
+     - [Checkbox] pnc: bool (not required, defaults to:   True)  
     Returns:
-     - [Textbox] output: str 
-
- - predict(inputs, task, api_name="/predict_1") -> output
-    Parameters:
-     - [Audio] inputs: filepath (required)  
-     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
-    Returns:
-     - [Textbox] output: str 
-
- - predict(yt_url, task, api_name="/predict_2") -> (output_0, output_1)
-    Parameters:
-     - [Textbox] yt_url: str (required)  
-     - [Radio] task: Literal['transcribe', 'translate'] (not required, defaults to:   transcribe)  
-    Returns:
-     - [Html] output_0: str 
-     - [Textbox] output_1: str
+     - [Textbox] model_output: str
 '''
 
-
+'''
 import gradio as gr
 from gradio_client import Client
 
@@ -100,7 +87,7 @@ import gradio as gr
 from gradio_client import Client
 
 # Constants for the model, batch size, file limit, server ports, and possible movement and time commands
-MODEL_NAME = "openai/whisper-large-v3"
+MODEL_NAME = "nvidia/canary-1b"
 BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
 WHISPER_SERVER_PORT = "http://localhost:7860"
@@ -113,24 +100,26 @@ asr_client = Client(WHISPER_SERVER_PORT)
 embedding_client = Client(TEXT_EMBEDDING_SERVER_PORT)
 
 # Function to predict the movement and time based on the parameters
-def predict(param_0, param_1):
+def predict(param_0, param_1) -> str:
     result = embedding_client.predict(param_0=param_0, param_1="\n".join(param_1), api_name="/predict")
     index = result.index(max(result))  # find the index of the highest value
-    return str(param_1[index])  # return the corresponding movement or time
+    return param_1[index]  # return the corresponding movement or time
 
 # Function to transcribe the audio input and predict the movement and time
 def transcribe(inputs: str, task: str) -> str:
     if inputs == "":
         return "No audio file submitted! Please upload or record an audio file before submitting your request."
     try:
-        result = asr_client.predict(inputs=inputs, task=task, api_name="/predict")  # transcribe the audio input
+        result = asr_client.predict(audio_filepath=inputs, src_lang="English", tgt_lang="English", pnc=False, api_name="/transcribe")  # transcribe the audio input
         print(result)
         movement = predict(result, MOVEMENT)  # predict the movement
+
         print(movement)
         time = predict(result, TIME)  # predict the time
         return f"movement = {movement}, time = {time}"  # return the movement and time
     except Exception as e:
         return f"An error occurred during transcription: {str(e)}"  # return the error message if any exception occurs
+
 
 # Creating a gradio web UI
 demo = gr.Blocks()
@@ -157,4 +146,3 @@ demo.queue()
 
 # Launching the web UI
 demo.launch(server_port=7862, share=True)
-'''
