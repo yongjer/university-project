@@ -11,6 +11,7 @@ Named API endpoints: 1
     Returns:
      - [Json] similarity_scores: Dict[Any, Any] (any valid json)
 '''
+
 '''
 Loaded as API: http://localhost:7860/ ✔
 Client.predict() Usage Info
@@ -25,6 +26,19 @@ Named API endpoints: 1
      - [Checkbox] pnc: bool (not required, defaults to:   True)  
     Returns:
      - [Textbox] model_output: str
+'''
+
+'''
+Loaded as API: http://localhost:7863/ ✔
+Client.predict() Usage Info
+---------------------------
+Named API endpoints: 1
+
+ - predict(message, api_name="/chat") -> value_1
+    Parameters:
+     - [Multimodaltextbox] message: Dict(text: str, files: List[filepath]) (not required, defaults to:   {'text': '', 'files': []})  
+    Returns:
+     - [Multimodaltextbox] value_1: Dict(text: str, files: List[filepath]) 
 '''
 
 '''
@@ -80,8 +94,8 @@ with demo:
 
 demo.queue()
 demo.launch(server_port=7862, share=True)
-
 '''
+
 # Importing gradio for creating web UI and gradio_client for making API requests
 import gradio as gr
 from gradio_client import Client
@@ -92,6 +106,7 @@ BATCH_SIZE = 8
 FILE_LIMIT_MB = 1000
 WHISPER_SERVER_PORT = "http://localhost:7860"
 TEXT_EMBEDDING_SERVER_PORT = "http://localhost:7861"
+MULTIMODAL_SERVER_PORT = "http://localhost:7863"
 MOVEMENT = ["forward", "backward", "go left", "go right", "upward", "downward", "stop"]
 TIME = ["do not move", "one second", "two seconds", "three seconds", "four seconds", "five seconds", "six seconds", "seven seconds", "eight seconds", "nine seconds", "ten seconds"]
 
@@ -119,6 +134,11 @@ def transcribe(inputs: str, task: str) -> str:
         return f"movement = {movement}, time = {time}"  # return the movement and time
     except Exception as e:
         return f"An error occurred during transcription: {str(e)}"  # return the error message if any exception occurs
+
+def chat(message: dict) -> dict:
+    pass
+
+
 
 
 # Creating a gradio web UI
