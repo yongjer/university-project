@@ -100,6 +100,12 @@ demo.launch(server_port=7862, share=True)
 import gradio as gr
 from gradio_client import Client
 
+# GPIO pins of arduino robot car
+LEFT_MOTOR = 18
+RIGHT_MOTOR = 23
+
+# Function to send commands to the robot car based on the parameters
+
 # Constants for the model, batch size, file limit, server ports, and possible movement and time commands
 MODEL_NAME = "nvidia/canary-1b"
 BATCH_SIZE = 8
@@ -111,12 +117,19 @@ MOVEMENT = ["forward", "backward", "go left", "go right", "upward", "downward", 
 TIME = ["do not move", "one second", "two seconds", "three seconds", "four seconds", "five seconds", "six seconds", "seven seconds", "eight seconds", "nine seconds", "ten seconds"]
 
 # Creating clients for ASR (Automatic Speech Recognition) and Text Embedding
-asr_client = Client(WHISPER_SERVER_PORT)
-embedding_client = Client(TEXT_EMBEDDING_SERVER_PORT)
+asr_client = Client(WHISPER_SERVER_PORT) # client for ASR
+embedding_client = Client(TEXT_EMBEDDING_SERVER_PORT) # client for text embedding
+
+
+
+
+
+
+
 
 # Function to predict the movement and time based on the parameters
 def predict(param_0, param_1) -> str:
-    result = embedding_client.predict(param_0=param_0, param_1="\n".join(param_1), api_name="/predict")
+    result = embedding_client.predict(param_0=param_0, param_1="\n".join(param_1), api_name="/predict") # predict the movement or time
     index = result.index(max(result))  # find the index of the highest value
     return param_1[index]  # return the corresponding movement or time
 
@@ -134,10 +147,6 @@ def transcribe(inputs: str, task: str) -> str:
         return f"movement = {movement}, time = {time}"  # return the movement and time
     except Exception as e:
         return f"An error occurred during transcription: {str(e)}"  # return the error message if any exception occurs
-
-def chat(message: dict) -> dict:
-    pass
-
 
 
 

@@ -1,11 +1,12 @@
+// robot car that will be controlled through serial communication
+
 #include <Arduino.h>
+
 
 void setup() {
   // Initialize serial communication at 9600 baud rate
-  Serial.begin(9600);
-  
-  // Set GPIO 13 as an output
-  pinMode(13, OUTPUT);
+  Serial.begin(115200);
+
 }
 
 void loop() {
@@ -13,14 +14,20 @@ void loop() {
   if (Serial.available() > 0) {
     // Read the incoming string
     String incomingString = Serial.readStringUntil('\n');
-    
-    // If the received value is "ON", set GPIO 13 to HIGH
-    if (incomingString == "ON") {
-      digitalWrite(13, HIGH);
-    }
-    // If the received value is "OFF", set GPIO 13 to LOW
-    else if (incomingString == "OFF") {
-      digitalWrite(13, LOW);
-    }
+
+    // Print the incoming string
+    Serial.println(incomingString);  
   }
+  else {
+    Serial.println("No data available");
+  }
+
+  // incomingString format: "PINNUMBER_ON/OFF" eg. "5_ON"
+
+  // Split the incoming string into two parts
+  int delimiterIndex = incomingString.indexOf('_');
+  String pinNumberString = incomingString.substring(0, delimiterIndex);
+  String stateString = incomingString.substring(delimiterIndex + 1);
+
+
 }
