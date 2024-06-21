@@ -98,10 +98,10 @@ def transcribe(inputs: str, task: str) -> str:
         )  # transcribe the audio input
         print(result)
         movement = predict(result, MOVEMENT)  # predict the movement
-
         print(movement)
         time = predict(result, TIME)  # predict the time
-        return f"movement = {movement}, time = {time}"  # return the movement and time
+        print(f"movement = {movement}, time = {time}") # return the movement and time
+        return f"{movement} {time}"
     except Exception as e:
         return f"An error occurred during transcription: {str(e)}"  # return the error message if any exception occurs
 
