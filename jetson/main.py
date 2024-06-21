@@ -45,10 +45,6 @@ Named API endpoints: 1
 import gradio as gr
 from gradio_client import Client
 
-# GPIO pins of arduino robot car
-LEFT_MOTOR = 18
-RIGHT_MOTOR = 23
-
 # Constants for the model, batch size, file limit, server ports, and possible movement and time commands
 MODEL_NAME = "nvidia/canary-1b"
 BATCH_SIZE = 8
@@ -71,7 +67,7 @@ TIME = [
     "ten second(s)",
 ]
 
-#
+
 
 
 # Creating clients for ASR (Automatic Speech Recognition) and Text Embedding
