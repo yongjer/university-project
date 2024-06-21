@@ -44,7 +44,7 @@ Named API endpoints: 1
 # Importing gradio for creating web UI and gradio_client for making API requests
 import gradio as gr
 from gradio_client import Client
-
+import serial # for serial communication
 # Constants for the model, batch size, file limit, server ports, and possible movement and time commands
 MODEL_NAME = "nvidia/canary-1b"
 BATCH_SIZE = 8
@@ -66,7 +66,7 @@ TIME = [
     "nine second(s)",
     "ten second(s)",
 ]
-
+ARDUINO_PORT = "/dev/ttyUSB0"
 
 
 
@@ -101,6 +101,10 @@ def transcribe(inputs: str, task: str) -> str:
         print(movement)
         time = predict(result, TIME)  # predict the time
         print(f"movement = {movement}, time = {time}") # return the movement and time
+        # send the movement and time to the Arduino
+        with serial.Serial(ARDUINO_PORT, 115200, timeout=1) as ser:
+            ser.write(f"{movement} {time}".encode())
+
         return f"{movement} {time}"
     except Exception as e:
         return f"An error occurred during transcription: {str(e)}"  # return the error message if any exception occurs
