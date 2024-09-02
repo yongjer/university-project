@@ -53,7 +53,7 @@ FILE_LIMIT_MB = 1000
 WHISPER_SERVER_PORT = "http://localhost:7860"
 TEXT_EMBEDDING_SERVER_PORT = "http://localhost:7861"
 MULTIMODAL_SERVER_PORT = "http://localhost:7863"
-MOVEMENT = ["forward", "backward", "go left", "go right", "upward", "downward", "stop"]
+MOVEMENT = ["forward", "backward", "left", "right", "upward", "downward", "stop"]
 TIME = [
     "zero second(s)",
     "one second(s)",
@@ -103,7 +103,7 @@ def transcribe(inputs: str, task: str) -> str:
         print(f"movement = {movement}, time = {time}")  # return the movement and time
 
         # send the movement and time to the Arduino
-        with serial.Serial(ARDUINO_PORT, 115200, timeout=1) as ser:
+        with serial.Serial(ARDUINO_PORT, 9600, timeout=1) as ser:
             ser.write(f"{movement} {time}".encode())
 
         return f"{movement} {time}"
