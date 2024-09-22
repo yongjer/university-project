@@ -7,7 +7,7 @@ const int leftMotorPin2 = 3;
 const int rightMotorPin1 = 4;
 const int rightMotorPin2 = 5;
 
-// Define pins for stepper motor of elevator
+// Define pins for the stepper motor of the elevator
 const int cwPin = 6;
 const int ccwPin = 7;
 AccelStepper stepper = AccelStepper(MOTOR_INTERFACE_TYPE, cwPin, ccwPin);
