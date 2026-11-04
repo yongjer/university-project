@@ -1,0 +1,38 @@
+# AI services, one profile per model. Start only what you need:
+#
+#   docker compose --profile canary up
+#
+# The images are x86-64 and need an NVIDIA GPU, so they run on a separate
+# machine; point the robot at it with ROBOT_ASR_URL=http://<host>:7860.
+# canary and distil-whisper both publish port 7860: run one at a time.
+services:
+  # ASR used by voice_robot.asr.GradioASRClient (/transcribe).
+  canary:
+    profiles: [canary]
+    image: registry.hf.space/nvidia-canary-1b:latest
+    platform: linux/amd64
+    command: python app.py
+    gpus: all
+    ports:
+      - "7860:7860"
+
+  # Alternative ASR from v1. GradioASRClient is written for canary's /transcribe
+  # signature; check this Space's API with Client.view_api() before relying on it.
+  distil-whisper:
+    profiles: [distil-whisper]
+    image: registry.hf.space/distil-whisper-whisper-vs-distil-whisper:latest
+    platform: linux/amd64
+    command: python app.py
+    gpus: all
+    ports:
+      - "7860:7860"
+
+  # Vision chat model from v1; not used by the controller yet.
+  phi3-vision:
+    profiles: [phi3-vision]
+    image: registry.hf.space/ysharma-microsoft-phi-3-vision-128k:latest
+    platform: linux/amd64
+    command: python app.py
+    gpus: all
+    ports:
+      - "7863:7860"
