@@ -1,128 +1,119 @@
-# University Project
+# Voice-Controlled Robot
+
 <div align="center">
 
+[![CI](https://github.com/yongjer/university-project/actions/workflows/ci.yml/badge.svg)](https://github.com/yongjer/university-project/actions/workflows/ci.yml)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/yongjer/university-project)
 
 </div>
 
-## Introduction
+A differential-drive robot with a stepper-driven elevator that follows spoken
+instructions such as *"move forward 3 seconds then turn right 2 seconds"*. It connects
+containerized speech recognition, a controller on an NVIDIA Jetson, and an Arduino Uno
+that drives the motors.
 
-This project is a university project focused on creating a voice-controlled robotic system. The system is comprised of the following key components:
+This began as a 2024 university project. The original prototype is preserved at the tag
+[`v1.0-legacy`](https://github.com/yongjer/university-project/tree/v1.0-legacy); this
+version re-engineers it with a non-blocking firmware, a tested API, and hardware-free CI.
 
-- **AI Server (`ai_server/`)**: Hosts various Artificial Intelligence models, primarily for speech recognition (converting voice commands to text) and potentially other AI tasks like vision or advanced command understanding.
-- **Jetson (`jetson/`)**: Acts as the main control unit. It likely captures audio, uses the AI server to interpret voice commands, and then translates these commands into actions for the robotic hardware.
-- **Arduino (`arduino/`)**: Manages the low-level control of the robot's hardware, such as motors for movement and other actuators, based on instructions received from the Jetson.
+## Architecture
 
-## Structure
+```mermaid
+flowchart LR
+    client["Client<br/>audio upload or text"] -->|HTTP| api
 
-The project is structured as follows:
+    subgraph gpu["GPU server (Docker)"]
+        asr["ASR<br/>Canary-1B"]
+    end
 
-- `ai_server/`: Contains various AI models and scripts to run them. The primary models and their purposes are:
-    - **ASR Models:** Used for Automatic Speech Recognition to convert spoken commands into text.
-        - Canary-1B ASR (`canary-1b/`)
-        - Distil-Whisper ASR (`distil-whisper/`)
-        - Whisper Large v3 ASR (`whisper-large-v3/`)
-    - **Vision Model:**
-        - Phi-3 Vision (`Phi-3-vision-128k-instruct/`): Capable of understanding and interpreting visual information.
-    - **Sentence Transformers:**
-        - BAAI/bge-m3 (`sentence-transformers/`): Used to create numerical representations (embeddings) of text, enabling semantic understanding of commands.
-    - **Running the Models:**
-        - Most models are run using Docker via `run.sh` scripts in their respective directories (e.g., `cd ai_server/MODEL_DIRECTORY && ./run.sh`).
-        - The `sentence-transformers` model is run using `python app.py` in its directory and utilizes Gradio for its interface.
-- `arduino/`: This directory contains the project for the microcontroller that directly controls the robot's hardware.
-    - **Purpose:** Manages the physical operation of the robot, including:
-        - Movement: Controls DC motors for forward, backward, left, and right motions.
-        - Elevator Mechanism: Controls a stepper motor for upward and downward movements.
-    - **Development:** The project is developed using PlatformIO.
-    - **Main Code:** The core logic for hardware control is located in `src/main.cpp`.
-    - **Command Interface:** The Arduino receives commands from the Jetson via serial communication. Commands are strings with the format `MOVEMENT DURATION`. Examples:
-        - `forward five second(s)`
-        - `backward two second(s)`
-        - `left one second(s)`
-        - `right three second(s)`
-        - `upward four second(s)`
-        - `downward one second(s)`
-        - `stop zero second(s)` (duration is often ignored for stop, as it's immediate)
-- `jetson/`: This directory houses the software for the Jetson device, which acts as the central processing unit or "brain" of the robotic system.
-    - **Role:** Orchestrates the overall operation of the robot by processing inputs and sending commands to the hardware controllers.
-    - **Workflow:**
-        - Captures audio input (likely via a microphone).
-        - Communicates with the `ai_server` to perform Automatic Speech Recognition (ASR) on the audio, converting it to text.
-        - Processes the recognized text command. The `jetson/similarity/app.py` script suggests it may use sentence embeddings (potentially from an `ai_server` model) to compare the command against known commands or understand variations in phrasing.
-        - Sends appropriate serial commands to the `arduino` to actuate the robot's motors and elevator.
-    - **Subdirectories:**
-        - `jetson/client/`: Contains client application code. (Note: Its `README.md` is currently a template and requires further details specific to this client).
-        - `jetson/similarity/`: Contains code related to command processing and similarity matching, as evidenced by `app.py`.
-    - **Dockerfile:** Contains a `Dockerfile` (`jetson/Dockerfile`), likely for containerizing the Jetson application environment, ensuring consistency and ease of deployment.
+    llm["LLM, optional<br/>OpenAI-compatible"]
 
-## Setup and Installation
+    subgraph jetson["NVIDIA Jetson (voice_robot)"]
+        api["FastAPI server"] --> parser["Intent parser<br/>rules or LLM"]
+        parser --> controller["RobotController<br/>runs one command at a time"]
+        controller --> link["RobotLink<br/>SerialLink or MockLink"]
+    end
 
-### `ai_server`
--   **Prerequisites:** Docker must be installed and running. Ensure your system supports GPU passthrough for Docker if using GPU-accelerated models.
--   **Models:**
-    -   Most models are run via Docker. The `run.sh` script in each model's directory (e.g., `ai_server/canary-1b/run.sh`) should attempt to pull the required Docker image from a registry (e.g., Hugging Face Spaces).
-    -   If a `run.sh` script fails to pull an image, you may need to manually pull it using `docker pull <image_name>`. The specific image names can be found within the `run.sh` scripts.
-    -   The `sentence-transformers` model (`ai_server/sentence-transformers/`) is run directly with Python. It requires Python and Gradio to be installed (`pip install gradio`). Dependencies for the model itself (e.g., `BAAI/bge-m3`) are usually downloaded automatically by the `gradio.load()` command on first run.
+    api <-->|audio to text| asr
+    parser <-.->|falls back to rules| llm
 
-### `arduino`
--   **Prerequisites:** PlatformIO IDE or PlatformIO Core must be installed.
--   **Building and Uploading:**
-    1.  Open the `arduino/` directory in PlatformIO IDE or navigate to it in your terminal.
-    2.  Build the project using the PlatformIO build command (e.g., `pio run`).
-    3.  Upload the compiled firmware to the Arduino board using the PlatformIO upload command (e.g., `pio run --target upload`). Ensure the Arduino is connected to your computer.
+    subgraph uno["Arduino Uno (robot_core)"]
+        fw["Non-blocking<br/>motion state machine"]
+    end
 
-### `jetson`
--   **Prerequisites:**
-    -   Python 3 installed.
-    -   Consider setting up a Python virtual environment.
--   **Dependencies:**
-    -   Install Python dependencies, such as `gradio_client`. Check individual scripts or subdirectories like `jetson/client/` for specific `requirements.txt` files.
-    -   Ensure any Jetson-specific SDKs or libraries (e.g., NVIDIA JetPack components) required for hardware interaction or accelerated computing are installed.
--   **Hardware Connection:** Ensure the Arduino is connected to the Jetson (e.g., via USB) for serial communication.
+    link <-->|"serial: FORWARD 3000, ACK, DONE, STOP"| fw
+    fw --> dc["2 x DC motors"]
+    fw --> stepper["Elevator stepper"]
+```
 
-## Usage
+| Directory | Contents |
+| :--- | :--- |
+| [`arduino/`](arduino/README.md) | C++17 firmware, wire protocol, native unit tests |
+| [`jetson/`](jetson/README.md) | Python package: API, intent parsing, execution, CLI |
+| [`ai_server/`](ai_server/compose.yaml) | Docker Compose profiles for the AI models |
 
-Follow these steps to operate the voice-controlled robotic system:
+## From v1 to v2
 
-1.  **Start AI Services (`ai_server`):**
-    *   Navigate to the directory of the desired AI model(s) within `ai_server/`. For instance, to use an ASR model: `cd ai_server/canary-1b` (or `distil-whisper`, `whisper-large-v3`).
-    *   Execute the `run.sh` script: `./run.sh`. This will typically start a Docker container serving the model. Note the port it's running on (e.g., 7860, found in the `run.sh` or script output).
-    *   If using the `sentence-transformers` model for command similarity, navigate to `ai_server/sentence-transformers/` and run `python app.py`. Note its port (e.g., 7861).
-    *   *Ensure the IP address and port of these AI services are correctly configured in the Jetson application(s) that will call them.* (The example `jetson/similarity/app.py` uses `127.0.0.1:7860`, implying it might run on the same machine or requires configuration if `ai_server` is remote).
+| Area | v1 prototype | v2 |
+| :--- | :--- | :--- |
+| Firmware loop | `readStringUntil()` and `delay()` block the loop, so `STOP` is ignored during a motion | Non-blocking `LineBuffer` and `millis()` state machine; `STOP` and new commands take effect during a motion |
+| Elevator | `runSpeed()` was called once before `delay()`, so each command produced at most one step | Pulses generated on every loop pass |
+| Build | Undefined `MOTOR_INTERFACE_TYPE` macro, did not compile as committed | Builds for the Uno in CI |
+| Intent parsing | Two embedding calls per utterance; one action only; unrelated speech still picked an action | Multi-step sentences; unrelated speech moves nothing; rules by default, optional LLM with JSON schema and automatic fallback |
+| Execution | Fire-and-forget serial write, no confirmation | Waits for `ACK` and `DONE`; a lost reply triggers a safety `STOP` and fails the plan |
+| Testing | Needed the robot and `/dev/ttyUSB0` | `MockLink` firmware emulator; 18 firmware tests and a `pytest` suite run in CI without hardware |
+| Interface | Gradio demo page | HTTP API (`/health`, `/command/text`, `/command/audio`, `/stop`) and CLI |
+| Repository | Temp recordings, `.DS_Store`, broken submodule, one `run.sh` per model | Cleaned up; `uv` and `pyproject.toml`; single `compose.yaml`; CI |
 
-2.  **Prepare Arduino (`arduino`):**
-    *   Ensure the Arduino board is flashed with the latest firmware from the `arduino/` directory (as per Setup instructions).
-    *   Connect the Arduino to the Jetson device (typically via USB). Note the serial port on the Jetson that the Arduino connects to (e.g., `/dev/ttyUSB0` or `/dev/ttyACM0`). This may need to be configured in the Jetson application.
+## Quick start
 
-3.  **Run Jetson Application (`jetson`):**
-    *   Navigate to the main Jetson application directory (e.g., this could be within `jetson/client/src` or a specific project directory).
-    *   Execute the main Python script (e.g., `python main_control_script.py` - replace `main_control_script.py` with the actual name of the script).
-    *   Ensure the Jetson application is configured with:
-        *   The correct IP address(es) and port(s) for the AI services running on `ai_server`.
-        *   The correct serial port for communicating with the Arduino.
+No robot is needed: the default configuration runs against an in-process firmware
+emulator. Requires [uv](https://docs.astral.sh/uv/).
 
-4.  **Operate the System:**
-    *   Once all components are running and connected, you should be able to issue voice commands.
-    *   Speak clearly into the microphone connected to the Jetson system.
-    *   The Jetson application will process the voice command using the AI server, determine the intended action (possibly using similarity matching), and send the corresponding command to the Arduino to control the robot.
+```bash
+cd jetson
+uv sync
+uv run voice-robot run "move forward 2 seconds then turn right for half a second"
+uv run voice-robot serve   # API docs at http://localhost:8000/docs
+```
 
-## Contributing
+Run the tests:
 
-We welcome contributions to this project! If you'd like to contribute, please follow these general guidelines:
+```bash
+(cd jetson && uv run pytest && uv run ruff check .)
+(cd arduino && pio test -e native && pio run -e uno)   # uv tool install platformio
+```
 
-1.  **Fork the Repository:** Start by forking the project to your own GitHub account.
-2.  **Create a Branch:** Create a new branch in your fork for your feature or bug fix. Use a descriptive name (e.g., `feature/new-voice-command` or `fix/arduino-motor-bug`).
-3.  **Make Your Changes:** Implement your changes, additions, or fixes in your branch.
-    *   Ensure your code is well-commented.
-    *   If adding new features, consider if documentation or examples need updating.
-    *   If applicable, add tests for your changes.
-4.  **Test Your Changes:** Make sure your changes work as expected and do not break existing functionality.
-5.  **Commit Your Changes:** Commit your work with clear and descriptive commit messages.
-6.  **Push to Your Fork:** Push your changes to your branch on your fork.
-7.  **Submit a Pull Request:** Open a pull request from your branch to the main project's `main` (or `master`) branch. Provide a clear description of your changes in the pull request.
+## Running on the robot
 
-If you're planning a larger contribution, it's a good idea to open an issue first to discuss your ideas.
+1. Flash the firmware: `cd arduino && pio run -e uno -t upload`
+2. Start speech recognition on the GPU server: `cd ai_server && docker compose --profile canary up`
+3. On the Jetson:
+
+   ```bash
+   cd jetson
+   uv sync --extra asr
+   ROBOT_LINK=serial ROBOT_SERIAL_PORT=/dev/ttyUSB0 \
+   ROBOT_ASR_URL=http://<gpu-server>:7860 uv run voice-robot serve
+   ```
+
+4. Send a recording, and keep the stop command at hand:
+
+   ```bash
+   curl -F file=@command.wav http://<jetson>:8000/command/audio
+   curl -X POST http://<jetson>:8000/stop
+   ```
+
+The API has no authentication; see [`jetson/README.md`](jetson/README.md#http-api).
+
+## Verification status
+
+Everything above runs in CI without hardware, using host-side firmware tests, an AVR
+build, and `pytest` against the firmware emulator and a simulated serial port. The v2
+firmware has not yet been run on the physical robot, and the original ASR containers have
+not been exercised end to end with v2. Motor direction and stepper settings may need
+adjusting on the bench (see [build options](arduino/README.md#build-options)).
 
 ## License
 
-This project is licensed under the terms of the [LICENSE](LICENSE) file.
+[GPL-3.0](LICENSE)
