@@ -1,1 +1,23 @@
-.vscode
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+dist/
+build/
+
+# PlatformIO
+.pio/
+
+# Runtime artifacts (recorded audio, temp files)
+*.wav
+*.webm
+*.tmp

@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: arduino
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: platformio-${{ hashFiles('arduino/platformio.ini') }}
+      - run: uv tool install platformio
+      - name: Unit tests (host)
+        run: pio test -e native
+      - name: Build for Arduino Uno
+        run: pio run -e uno
+
+  jetson:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.10 is what JetPack 6 ships.
+        python-version: ["3.10", "3.13"]
+    defaults:
+      run:
+        working-directory: jetson
+    env:
+      UV_PYTHON: ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          cache-dependency-glob: jetson/uv.lock
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run pytest
